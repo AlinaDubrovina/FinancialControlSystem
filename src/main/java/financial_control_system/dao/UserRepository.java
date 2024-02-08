@@ -14,9 +14,9 @@ import java.util.UUID;
 public class UserRepository implements IUserRepository {
     private static final String CREATE_QUERY = "INSERT into app.user(user_name, email) VALUES(?, ?) ";
     private static final String GET_ALL_QUERY = "SELECT * FROM app.user";
-    private static final String GET_BY_ID_QUERY = "SELECT * FROM user WHERE user_id = ?";
+    private static final String GET_BY_ID_QUERY = "SELECT * FROM app.user WHERE user_id = ?";
     private static final String UPDATE_QUERY = "UPDATE app.user SET email = ? WHERE user_id = ?";
-    private static final String DELETE_QUERY = "DELETE * FROM app.user WHERE user_id = ?";
+    private static final String DELETE_QUERY = "DELETE FROM app.user WHERE user_id = ?";
     private final DbConnection connection;
 
     public UserRepository(){
@@ -79,8 +79,8 @@ public class UserRepository implements IUserRepository {
     public void update(long userId, User user) throws SQLException {
         try (Connection conn = connection.connect();
              PreparedStatement statement = conn.prepareStatement(UPDATE_QUERY)) {
-            statement.setLong(1, userId);
-            statement.setString(2, user.getEmail());
+            statement.setLong(2, userId);
+            statement.setString(1, user.getEmail());
 
             statement.executeUpdate();
         }
@@ -91,7 +91,7 @@ public class UserRepository implements IUserRepository {
         try (Connection conn = connection.connect();
              PreparedStatement statement = conn.prepareStatement(DELETE_QUERY)) {
             long userId = user.getUserId();
-            statement.setString(1, String.valueOf(userId));
+            statement.setLong(1, userId);
             statement.executeUpdate();
         }
     }

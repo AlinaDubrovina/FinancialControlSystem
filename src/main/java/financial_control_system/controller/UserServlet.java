@@ -1,7 +1,7 @@
 package financial_control_system.controller;
 
 import financial_control_system.core.dto.UserDto;
-import financial_control_system.service.IUserService;
+import financial_control_system.service.api.IUserService;
 import financial_control_system.service.UserService;
 
 import javax.servlet.ServletException;
@@ -23,14 +23,28 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
-        resp.setContentType("text/html, charset=UTF-8");
+        resp.setContentType("text/html; charset=UTF-8");
         PrintWriter writer = resp.getWriter();
 
-        Set<UserDto> users = userService.getAll();
-        for (UserDto userDto : users) {
-            writer.println("<li>User ID: " + userDto.getUserId()
-                    + ", Username: " + userDto.getUserName()
-                    + ", Email: " + userDto.getEmail() + "</li>");
+        String userIdParam = req.getParameter("userId");
+
+        if(userIdParam == null) {
+            Set<UserDto> users = userService.getAll();
+            for (UserDto userDto : users) {
+                writer.println("<li>User ID: " + userDto.getUserId()
+                        + ", Username: " + userDto.getUserName()
+                        + ", Email: " + userDto.getEmail() + "</li>");
+            }
+        } else {
+            long userId = Long.parseLong(userIdParam);
+            UserDto userDto = userService.getById(userId);
+            if(userDto != null) {
+                writer.println("<li>User ID: " + userDto.getUserId()
+                        + ", Username: " + userDto.getUserName()
+                        + ", Email: " + userDto.getEmail() + "</li>");
+            } else {
+                writer.println("<li>User with ID " + userId + " not found.</li>");
+            }
         }
     }
 
@@ -47,15 +61,27 @@ public class UserServlet extends HttpServlet {
         userDto.setEmail(email);
 
         userService.create(userDto);
+        resp.setStatus(HttpServletResponse.SC_CREATED);
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPut(req, resp);
+        req.setCharacterEncoding("UTF-8");
+        resp.setContentType("text/html, charset=UTF-8");
+
+        String userIdParam = req.getParameter("userId");
+        String newEmail = req.getParameter("newEmail");
+
+        userService.update(Long.parseLong(userIdParam), newEmail);
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doDelete(req, resp);
+        req.setCharacterEncoding("UTF-8");
+        resp.setContentType("text/html, charset=UTF-8");
+
+        String userIdParam = req.getParameter("userId");
+
+        userService.delete(Long.parseLong(userIdParam));
     }
 }
