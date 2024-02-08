@@ -1,4 +1,4 @@
-package financial_control_system.service;
+package financial_control_system.service.api;
 
 import financial_control_system.core.dto.UserDto;
 

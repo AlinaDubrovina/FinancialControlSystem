@@ -4,14 +4,15 @@ import financial_control_system.core.dto.UserDto;
 import financial_control_system.dao.UserRepository;
 import financial_control_system.dao.api.IUserRepository;
 import financial_control_system.dao.model.User;
-import financial_control_system.mapper.IUserMapper;
+import financial_control_system.mapper.api.IUserMapper;
 import financial_control_system.mapper.UserMapper;
+import financial_control_system.service.api.IUserService;
 
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class UserService implements IUserService{
+public class UserService implements IUserService {
     private final IUserRepository userRepository;
     private final IUserMapper userMapper;
 
