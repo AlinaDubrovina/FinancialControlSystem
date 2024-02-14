@@ -14,5 +14,5 @@ public class Transaction {
     private UUID transactionId;
     private BigDecimal amount;
     private String description;
-    private Account account;
+    private long accountId;
 }

@@ -9,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 public class UserRepository implements IUserRepository {
     private static final String CREATE_QUERY = "INSERT into app.user(user_name, email) VALUES(?, ?) ";
@@ -76,10 +75,10 @@ public class UserRepository implements IUserRepository {
     }
 
     @Override
-    public void update(long userId, User user) throws SQLException {
+    public void update(long id, User user) throws SQLException {
         try (Connection conn = connection.connect();
              PreparedStatement statement = conn.prepareStatement(UPDATE_QUERY)) {
-            statement.setLong(2, userId);
+            statement.setLong(2, id);
             statement.setString(1, user.getEmail());
 
             statement.executeUpdate();

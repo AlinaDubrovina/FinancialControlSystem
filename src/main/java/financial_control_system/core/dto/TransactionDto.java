@@ -14,5 +14,5 @@ public class TransactionDto {
     private UUID transactionId;
     private BigDecimal amount;
     private String description;
-    private AccountDto account;
+    private long accountId;
 }

@@ -9,6 +9,6 @@ public interface IUserRepository {
     void create(User user) throws SQLException;
     Set<User> getAll() throws SQLException;
     User getById(long id) throws SQLException;
-    void update(long userId, User user) throws SQLException;
+    void update(long id, User user) throws SQLException;
     void delete(User user) throws SQLException;
 }

@@ -62,20 +62,20 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void update(long userId, String newEmail) {
+    public void update(long id, String newEmail) {
         try {
-            User user = userRepository.getById(userId);
+            User user = userRepository.getById(id);
             user.setEmail(newEmail);
-            userRepository.update(userId, user);
+            userRepository.update(id, user);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void delete(long userId) {
+    public void delete(long id) {
         try {
-            User user = userRepository.getById(userId);
+            User user = userRepository.getById(id);
             userRepository.delete(user);
         } catch (SQLException e) {
             throw new RuntimeException(e);

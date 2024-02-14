@@ -8,6 +8,6 @@ public interface IUserService {
     void create(UserDto userDto);
     Set<UserDto> getAll();
     UserDto getById(long id);
-    void update(long userId, String newEmail);
-    void delete(long userId);
+    void update(long id, String newEmail);
+    void delete(long id);
 }

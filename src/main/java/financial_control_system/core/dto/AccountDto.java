@@ -5,13 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
 public class AccountDto {
-    private UUID accountId;
+    private long accountId;
     private BigDecimal balance;
-    private UserDto user;
+    private long userId;
 }

@@ -1,9 +1,9 @@
 package financial_control_system.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import financial_control_system.core.dto.UserDto;
-import financial_control_system.service.api.IUserService;
-import financial_control_system.service.UserService;
+import financial_control_system.core.dto.TransactionDto;
+import financial_control_system.service.TransactionService;
+import financial_control_system.service.api.ITransactionService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,14 +13,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Set;
+import java.util.List;
+import java.util.UUID;
 
-@WebServlet(urlPatterns = "/user", name = "UserServlet")
-public class UserServlet extends HttpServlet {
-    private final IUserService userService = new UserService();
+@WebServlet(urlPatterns = "/transaction", name = "TransactionServlet")
+public class TransactionServlet extends HttpServlet {
+    private final ITransactionService transactionService = new TransactionService();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public UserServlet() {
+    public TransactionServlet() {
     }
 
     @Override
@@ -29,25 +30,14 @@ public class UserServlet extends HttpServlet {
         resp.setContentType("text/html; charset=UTF-8");
         PrintWriter writer = resp.getWriter();
 
-        String userIdParam = req.getParameter("userId");
+        String accountIdParam = req.getParameter("account_id");
 
-        if(userIdParam == null) {
-            Set<UserDto> users = userService.getAll();
-            for (UserDto userDto : users) {
-                writer.println("<li>User ID: " + userDto.getUserId()
-                        + ", Username: " + userDto.getUserName()
-                        + ", Email: " + userDto.getEmail() + "</li>");
-            }
-        } else {
-            long userId = Long.parseLong(userIdParam);
-            UserDto userDto = userService.getById(userId);
-            if(userDto != null) {
-                writer.println("<li>User ID: " + userDto.getUserId()
-                        + ", Username: " + userDto.getUserName()
-                        + ", Email: " + userDto.getEmail() + "</li>");
-            } else {
-                writer.println("<li>User with ID " + userId + " not found.</li>");
-            }
+        List<TransactionDto> transactions = transactionService.getByAccountId(Long.parseLong(accountIdParam));
+        for (TransactionDto transactionDto : transactions) {
+            writer.println("<li>Transaction ID: " + transactionDto.getTransactionId()
+                    + ", Amount: " + transactionDto.getAmount()
+                    + ", Description: " + transactionDto.getDescription()
+                    + ", Account ID: " + transactionDto.getAccountId() + "</li>");
         }
     }
 
@@ -63,8 +53,8 @@ public class UserServlet extends HttpServlet {
                 requestBody.append(line);
             }
 
-            UserDto userDto = objectMapper.readValue(requestBody.toString(), UserDto.class);
-            userService.create(userDto);
+            TransactionDto transactionDto = objectMapper.readValue(requestBody.toString(), TransactionDto.class);
+            transactionService.create(transactionDto);
             resp.setStatus(HttpServletResponse.SC_CREATED);
         }
     }
@@ -74,8 +64,8 @@ public class UserServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html;charset=UTF-8");
 
-        String userIdParam = req.getParameter("userId");
-        long userId = Long.parseLong(userIdParam);
+        String transactionIdParam = req.getParameter("transaction_id");
+        UUID transactionId = UUID.fromString(transactionIdParam);
 
         StringBuilder requestBody = new StringBuilder();
         try (BufferedReader reader = req.getReader()) {
@@ -85,9 +75,9 @@ public class UserServlet extends HttpServlet {
             }
         }
 
-        UserDto userDto = objectMapper.readValue(requestBody.toString(), UserDto.class);
+        TransactionDto transactionDto = objectMapper.readValue(requestBody.toString(), TransactionDto.class);
 
-        userService.update(userId, userDto.getEmail());
+        transactionService.update(transactionId, transactionDto.getDescription());
     }
 
     @Override
@@ -95,8 +85,8 @@ public class UserServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html, charset=UTF-8");
 
-        String userIdParam = req.getParameter("userId");
+        String transactionIdParam = req.getParameter("transaction_id");
 
-        userService.delete(Long.parseLong(userIdParam));
+        transactionService.delete(UUID.fromString(transactionIdParam));
     }
 }

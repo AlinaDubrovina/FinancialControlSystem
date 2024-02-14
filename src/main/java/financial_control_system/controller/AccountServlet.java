@@ -1,9 +1,9 @@
 package financial_control_system.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import financial_control_system.core.dto.UserDto;
-import financial_control_system.service.api.IUserService;
-import financial_control_system.service.UserService;
+import financial_control_system.core.dto.AccountDto;
+import financial_control_system.service.AccountService;
+import financial_control_system.service.api.IAccountService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,12 +15,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Set;
 
-@WebServlet(urlPatterns = "/user", name = "UserServlet")
-public class UserServlet extends HttpServlet {
-    private final IUserService userService = new UserService();
+@WebServlet(urlPatterns = "/account", name = "AccountServlet")
+public class AccountServlet extends HttpServlet {
+    private final IAccountService accountService = new AccountService();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public UserServlet() {
+    public AccountServlet() {
     }
 
     @Override
@@ -29,24 +29,24 @@ public class UserServlet extends HttpServlet {
         resp.setContentType("text/html; charset=UTF-8");
         PrintWriter writer = resp.getWriter();
 
-        String userIdParam = req.getParameter("userId");
+        String accountIdParam = req.getParameter("account_id");
 
-        if(userIdParam == null) {
-            Set<UserDto> users = userService.getAll();
-            for (UserDto userDto : users) {
-                writer.println("<li>User ID: " + userDto.getUserId()
-                        + ", Username: " + userDto.getUserName()
-                        + ", Email: " + userDto.getEmail() + "</li>");
+        if(accountIdParam == null) {
+            Set<AccountDto> accounts = accountService.getAll();
+            for (AccountDto account : accounts) {
+                writer.println("<li>Account ID: " + account.getAccountId()
+                        + ", Balance: " + account.getBalance()
+                        + ", User: " + account.getUserId() + "</li>");
             }
         } else {
-            long userId = Long.parseLong(userIdParam);
-            UserDto userDto = userService.getById(userId);
-            if(userDto != null) {
-                writer.println("<li>User ID: " + userDto.getUserId()
-                        + ", Username: " + userDto.getUserName()
-                        + ", Email: " + userDto.getEmail() + "</li>");
+            long accountId = Long.parseLong(accountIdParam);
+            AccountDto accountDto = accountService.getById(accountId);
+            if(accountDto != null) {
+                writer.println("<li>Account ID: " + accountDto.getAccountId()
+                        + ", Balance: " + accountDto.getBalance()
+                        + ", User ID: " + accountDto.getUserId() + "</li>");
             } else {
-                writer.println("<li>User with ID " + userId + " not found.</li>");
+                writer.println("<li>Account with ID " + accountId + " not found.</li>");
             }
         }
     }
@@ -54,7 +54,7 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
-        resp.setContentType("text/html, charset=UTF-8");
+        resp.setContentType("text/html; charset=UTF-8");
 
         try (BufferedReader reader = req.getReader()) {
             StringBuilder requestBody = new StringBuilder();
@@ -63,8 +63,8 @@ public class UserServlet extends HttpServlet {
                 requestBody.append(line);
             }
 
-            UserDto userDto = objectMapper.readValue(requestBody.toString(), UserDto.class);
-            userService.create(userDto);
+            AccountDto accountDto = objectMapper.readValue(requestBody.toString(), AccountDto.class);
+            accountService.create(accountDto);
             resp.setStatus(HttpServletResponse.SC_CREATED);
         }
     }
@@ -72,10 +72,9 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
-        resp.setContentType("text/html;charset=UTF-8");
+        resp.setContentType("text/html, charset=UTF-8");
 
-        String userIdParam = req.getParameter("userId");
-        long userId = Long.parseLong(userIdParam);
+        String accountId = req.getParameter("account_id");
 
         StringBuilder requestBody = new StringBuilder();
         try (BufferedReader reader = req.getReader()) {
@@ -84,10 +83,8 @@ public class UserServlet extends HttpServlet {
                 requestBody.append(line);
             }
         }
-
-        UserDto userDto = objectMapper.readValue(requestBody.toString(), UserDto.class);
-
-        userService.update(userId, userDto.getEmail());
+        AccountDto accountDto = objectMapper.readValue(requestBody.toString(), AccountDto.class);
+        accountService.update(Long.parseLong(accountId), accountDto.getBalance());
     }
 
     @Override
@@ -95,8 +92,8 @@ public class UserServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html, charset=UTF-8");
 
-        String userIdParam = req.getParameter("userId");
+        String accountIdParam = req.getParameter("account_id");
 
-        userService.delete(Long.parseLong(userIdParam));
+        accountService.delete(Long.parseLong(accountIdParam));
     }
 }
