@@ -84,6 +84,7 @@ public class AccountRepository implements IAccountRepository {
         }
     }
 
+
     @Override
     public void delete(Account account) throws SQLException {
         try (Connection conn = connection.connect();
