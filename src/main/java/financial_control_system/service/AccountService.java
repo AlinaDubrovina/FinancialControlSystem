@@ -60,7 +60,6 @@ public class AccountService implements IAccountService {
         return accountMapper.toDto(account);
     }
 
-
     @Override
     public void update(long id, BigDecimal newBalance) {
         try {
