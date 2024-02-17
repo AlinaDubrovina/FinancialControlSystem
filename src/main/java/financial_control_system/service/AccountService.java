@@ -22,7 +22,6 @@ public class AccountService implements IAccountService {
         this.accountMapper = new AccountMapper();
     }
 
-
     @Override
     public void create(AccountDto accountDto) {
         Account account;
