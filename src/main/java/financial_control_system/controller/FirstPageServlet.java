@@ -9,6 +9,9 @@ import java.io.IOException;
 
 @WebServlet("/api")
 public class FirstPageServlet extends HttpServlet {
+    public FirstPageServlet() {
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
