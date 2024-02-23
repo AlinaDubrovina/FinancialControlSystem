@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
+@RequiredArgsConstructor // тут нет констант, поэтому эта аннотация ни к чему) Лучше уже тогда NoArgsConstructor
 public class AccountDto {
     private long accountId;
     private BigDecimal balance;

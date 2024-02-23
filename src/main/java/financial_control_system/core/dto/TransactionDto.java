@@ -9,7 +9,6 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 public class TransactionDto {
     private UUID transactionId;
     private BigDecimal amount;
