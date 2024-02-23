@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class AccountService implements IAccountService {
     private final IAccountRepository accountRepository;
@@ -35,17 +36,14 @@ public class AccountService implements IAccountService {
 
     @Override
     public Set<AccountDto> getAll() {
-        Set<AccountDto> accountDtos = new HashSet<>();
         try {
-            Set<Account> accounts = accountRepository.getAll();
-            for (Account account : accounts) {
-                AccountDto accountDto = accountMapper.toDto(account);
-                accountDtos.add(accountDto);
-            }
+            return accountRepository.getAll()
+                    .stream()
+                    .map(accountMapper::toDto)
+                    .collect(Collectors.toSet());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return accountDtos;
     }
 
     @Override

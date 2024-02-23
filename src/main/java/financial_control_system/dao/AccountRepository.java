@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class AccountRepository implements IAccountRepository {
-    private static final String CREATE_QUERY = "INSERT into app.account(balance, user_id) VALUES(?, ?) ";
+    private static final String CREATE_QUERY = "INSERT into app.account(balance, user_id) VALUES(?, ?) "; // молодец
     private static final String GET_ALL_QUERY = "SELECT * FROM app.account";
     private static final String GET_BY_ID_QUERY = "SELECT * FROM app.account WHERE account_id = ?";
     private static final String UPDATE_QUERY = "UPDATE app.account SET balance = ? WHERE account_id = ?";
@@ -42,15 +42,18 @@ public class AccountRepository implements IAccountRepository {
              ResultSet resultSet = preparedStatement.executeQuery()) {
 
             while (resultSet.next()) {
-                Account account = new Account();
-                account.setAccountId(resultSet.getLong("account_id"));
-                account.setBalance(resultSet.getBigDecimal("balance"));
-                account.setUserId(resultSet.getLong("user_id"));
-                accounts.add(account);
+                accounts.add(map(resultSet));
             }
         }
 
         return accounts;
+    }
+
+    private Account map(ResultSet resultSet) throws SQLException {
+        return  new Account()
+                .setAccountId(resultSet.getLong("account_id"))// вот эту логику можно в маппер вынести
+                .setBalance(resultSet.getBigDecimal("balance")) // типо так
+                .setUserId(resultSet.getLong("user_id"));
     }
 
     @Override

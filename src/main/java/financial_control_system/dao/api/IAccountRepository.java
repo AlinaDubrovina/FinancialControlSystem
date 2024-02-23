@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.Set;
 
 public interface IAccountRepository {
-    void create(Account account) throws SQLException;
+    void create(Account account) throws SQLException; // а где дока?
     Set<Account> getAll() throws SQLException;
     Account getById(long id) throws SQLException;
     void update(long id, Account account) throws SQLException;
